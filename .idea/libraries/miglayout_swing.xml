@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="miglayout-swing">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libraries/miglayout-swing.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libraries/swing-datetime-picker-2.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libraries/flatlaf-extras-3.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

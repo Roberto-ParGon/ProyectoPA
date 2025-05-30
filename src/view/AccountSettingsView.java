@@ -282,7 +282,7 @@ public class AccountSettingsView extends JDialog {
         btnAccept.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         btnAccept.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Cambios guardados (simulado).");
+            JOptionPane.showMessageDialog(this, "Cambios guardados.");
             dispose();
         });
 

@@ -20,11 +20,13 @@ public class DashboardView extends JFrame {
 
     private void initializeComponents(String clienteNombre, double saldoActual) {
 
+        //Panel superior
         JPanel topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.X_AXIS));
         topPanel.setBorder(new EmptyBorder(20, 30, 20, 30));
-        topPanel.setBackground(new Color(44, 44, 58)); // Color de fondo para consistencia
+        topPanel.setBackground(new Color(44, 44, 58));
 
+        //Botón salir
         ImageIcon logoutIcon = new ImageIcon(getClass().getResource("/resources/icon/logout.png"));
         JButton btnLogout = new JButton(logoutIcon);
         btnLogout.setBorderPainted(false);
@@ -37,15 +39,16 @@ public class DashboardView extends JFrame {
             this.dispose();
         });
 
+        //Label nombre cliente + saldo actual
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
-        textPanel.setOpaque(false); // Hacer transparente para que se vea el fondo de topPanel
+        textPanel.setOpaque(false);
 
         JLabel lblBienvenido = new JLabel("Bienvenido, " + clienteNombre);
         lblBienvenido.setFont(new Font("SansSerif", Font.PLAIN, 24));
         lblBienvenido.setForeground(Color.LIGHT_GRAY);
 
-        JLabel lblSaldo = new JLabel(String.format("Tu saldo es: $%,.2f MXN", saldoActual)); // Formato mejorado
+        JLabel lblSaldo = new JLabel(String.format("Tu saldo es: $%,.2f MXN", saldoActual));
         lblSaldo.setFont(new Font("SansSerif", Font.BOLD, 32));
         lblSaldo.setForeground(Color.WHITE);
 
@@ -94,6 +97,7 @@ public class DashboardView extends JFrame {
         btnRetirar.addActionListener(transactionListener);
         btnDepositar.addActionListener(transactionListener);
 
+        //Botón configuración cuenta
         ImageIcon manageIcon = new ImageIcon(getClass().getResource("/resources/icon/manage_account.png"));
         JButton btnManage = new JButton(manageIcon);
         btnManage.setContentAreaFilled(false);
@@ -122,10 +126,12 @@ public class DashboardView extends JFrame {
 
         add(topPanel, BorderLayout.NORTH);
 
+        //Panel de Tablas
         JPanel centerPanel = new JPanel(new GridLayout(1, 2, 20, 0));
         centerPanel.setBorder(new EmptyBorder(20, 30, 30, 30));
         centerPanel.setBackground(new Color(44, 44, 58));
 
+        //JTabla izquierda - Retiros
         DefaultTableModel modeloRetiros = new DefaultTableModel(new Object[][]{
                 {"10 de enero del 2025", "$250.00 MXN"},
                 {"28 de enero del 2025", "$100.00 MXN"}
@@ -150,6 +156,7 @@ public class DashboardView extends JFrame {
         panelRetiros.add(lblRetiros, BorderLayout.NORTH);
         panelRetiros.add(scrollRetiros, BorderLayout.CENTER);
 
+        //JTabla derecha - Depósitos
         DefaultTableModel modeloDepositos = new DefaultTableModel(new Object[][]{
                 {"16 de enero del 2025", "$2,500.00 MXN"},
                 {"31 de enero del 2025", "$3,000.00 MXN"}
@@ -178,10 +185,9 @@ public class DashboardView extends JFrame {
         centerPanel.add(panelDepositos);
         add(centerPanel, BorderLayout.CENTER);
     }
-
+//Model de depósito/retiro
     private void showAmountDialog(String dialogTitle, String action) {
         JPanel panel = new JPanel(new GridBagLayout());
-        panel.setBackground(new Color(44, 44, 58));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.gridx = 0;
@@ -199,7 +205,6 @@ public class DashboardView extends JFrame {
         JSpinner.NumberEditor editor = (JSpinner.NumberEditor) spinner.getEditor();
         JFormattedTextField textField = editor.getTextField();
         textField.setForeground(Color.WHITE);
-        textField.setBackground(new Color(30, 30, 42));
         textField.setHorizontalAlignment(SwingConstants.CENTER);
 
         gbc.gridy = 1;

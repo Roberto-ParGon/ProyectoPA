@@ -5,20 +5,41 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.URL;
 import java.util.Objects;
 
 public class LoginView extends JFrame {
+
+    private JPasswordField tfPin;
+    private ImageIcon eyeOnIcon;
+    private ImageIcon eyeOffIcon;
+    private boolean isPinVisible = false;
+
+
     public LoginView() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 750);
         setResizable(false);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
+
+        URL eyeOnURL = getClass().getResource("/resources/icon/eye_on.png");
+        if (eyeOnURL != null) {
+            eyeOnIcon = new ImageIcon(new ImageIcon(eyeOnURL).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+        } else {
+            System.err.println("No se pudo encontrar el recurso eye_on.png");
+        }
+
+        URL eyeOffURL = getClass().getResource("/resources/icon/eye_off.png");
+        if (eyeOffURL != null) {
+            eyeOffIcon = new ImageIcon(new ImageIcon(eyeOffURL).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
+        } else {
+            System.err.println("No se pudo encontrar el recurso eye_off.png");
+        }
         initializeComponents();
     }
 
     private void initializeComponents() {
-        //Panel izquierdo
         JPanel leftPanel = new JPanel(new GridBagLayout());
         leftPanel.setPreferredSize(new Dimension(500, 750));
         //leftPanel.setBackground(new Color(32, 32, 50));
@@ -42,7 +63,7 @@ public class LoginView extends JFrame {
 
         JTextField tfCard = new JTextField();
         tfCard.setPreferredSize(new Dimension(300, 45));
-        tfCard.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        tfCard.setFont(new Font("SansSerif", Font.PLAIN, 16));
         tfCard.setBackground(new Color(45, 45, 65));
         tfCard.setForeground(Color.WHITE);
         tfCard.setCaretColor(Color.WHITE);
@@ -58,20 +79,44 @@ public class LoginView extends JFrame {
         lblPin.setForeground(Color.WHITE);
         gbc.gridy = 3; gbc.insets.bottom = 8; gbc.anchor = GridBagConstraints.WEST;
         leftPanel.add(lblPin, gbc);
+        JPanel pinPanel = new JPanel(new BorderLayout());
+        pinPanel.setPreferredSize(new Dimension(300, 45));
+        pinPanel.setBackground(new Color(45, 45, 65));
+        pinPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(70, 70, 90), 1),
+                new EmptyBorder(8, 15, 8, 5)));
 
-        JPasswordField tfPin = new JPasswordField();
-        tfPin.setPreferredSize(new Dimension(300, 45));
-        tfPin.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        tfPin = new JPasswordField();
+        tfPin.setFont(new Font("SansSerif", Font.PLAIN, 16));
         tfPin.setBackground(new Color(45, 45, 65));
         tfPin.setForeground(Color.WHITE);
         tfPin.setCaretColor(Color.WHITE);
-        tfPin.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(70, 70, 90), 1),
-                new EmptyBorder(8, 15, 8, 15)));
-        gbc.gridy = 4; gbc.insets.bottom = 50; gbc.anchor = GridBagConstraints.CENTER;
-        leftPanel.add(tfPin, gbc);
+        tfPin.setBorder(null);
+        tfPin.setEchoChar('*');
 
-        //Botón
+        JLabel eyeIconLabel = new JLabel(eyeOffIcon);
+        eyeIconLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        eyeIconLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                isPinVisible = !isPinVisible;
+                if (isPinVisible) {
+                    tfPin.setEchoChar((char) 0);
+                    eyeIconLabel.setIcon(eyeOnIcon);
+                } else {
+                    tfPin.setEchoChar('*');
+                    eyeIconLabel.setIcon(eyeOffIcon);
+                }
+            }
+        });
+
+        pinPanel.add(tfPin, BorderLayout.CENTER);
+        pinPanel.add(eyeIconLabel, BorderLayout.EAST);
+
+        gbc.gridy = 4; gbc.insets.bottom = 50; gbc.anchor = GridBagConstraints.CENTER;
+        leftPanel.add(pinPanel, gbc);
+
+        //Botón de ingresar
         JButton btnLogin = new JButton("Ingresar");
         btnLogin.setFont(new Font("SansSerif", Font.BOLD, 20));
         btnLogin.setBackground(new Color(102, 102, 204));
@@ -100,15 +145,33 @@ public class LoginView extends JFrame {
         add(leftPanel, BorderLayout.WEST);
         add(rightPanel, BorderLayout.CENTER);
 
+        //Lanzar ventana de registro
         lblRegister.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                RegisterView registerView = new RegisterView(LoginView.this); // Pasar this como owner
+                RegisterView registerView = new RegisterView(LoginView.this);
                 registerView.setVisible(true);
             }
         });
 
+        //Validar y lanzar ventana de Dashboard
+        btnLogin.addActionListener(e -> {
+            String numTarjeta = tfCard.getText();
+            String pin = new String(tfPin.getPassword());
 
+            if (numTarjeta.equals("") && pin.equals("")) {
+                String nombreCliente = "Juan Carlos Rocoque";
+                double saldo = 25000.00;
+
+                DashboardView dashboard = new DashboardView(nombreCliente, saldo);
+                dashboard.setVisible(true);
+                dispose();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Número de tarjeta o PIN incorrecto.",
+                        "Error de autenticación",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
     }
-
 }

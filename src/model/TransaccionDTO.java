@@ -5,15 +5,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TransaccionDTO {
+    private int id;
     private Timestamp fecha;
     private double monto;
     private String tipoTransaccion;
 
-    public TransaccionDTO(Timestamp fecha, double monto, String tipoTransaccion) {
+    public TransaccionDTO(int id, Timestamp fecha, double monto, String tipoTransaccion) {
+        this.id = id;
         this.fecha = fecha;
         this.monto = monto;
         this.tipoTransaccion = tipoTransaccion;
     }
+
+    public int getId() { return id; }
 
     public Date getFecha() {
         return fecha;

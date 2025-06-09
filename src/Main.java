@@ -1,4 +1,5 @@
 import com.formdev.flatlaf.IntelliJTheme;
+import com.sun.javaws.Globals;
 import model.Connection;
 import view.LoginView;
 

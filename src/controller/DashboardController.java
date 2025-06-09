@@ -4,6 +4,8 @@ import model.CuentaDAO;
 import model.TarjetaDTO;
 import model.TransaccionDTO;
 import view.DashboardView;
+import view.TransactionSettingsView;
+
 import javax.swing.*;
 import java.util.List;
 
@@ -17,14 +19,16 @@ public class DashboardController {
         this.view = view;
         this.dao = dao;
         this.numTarjeta = numTarjeta;
+        this.view.addConfigurarListener(e -> configurarTransaccion());
 
         cargarDatosDeTarjeta();
 
         this.view.addDepositarListener(e -> procesarTransaccion("DEPOSITO"));
         this.view.addRetirarListener(e -> procesarTransaccion("RETIRO"));
+
     }
 
-    private void cargarDatosDeTarjeta() {
+    public void cargarDatosDeTarjeta() {
         TarjetaDTO tarjeta = dao.getTarjeta(numTarjeta);
         if (tarjeta != null) {
             view.setSaldo(tarjeta.getSaldo());
@@ -32,6 +36,8 @@ public class DashboardController {
             view.setTransaccionesData(transacciones);
         }
     }
+
+
 
     private void procesarTransaccion(String tipo) {
         String titulo = tipo.equals("RETIRO") ? "¿Cuánto monto deseas retirar?" : "¿Cuánto monto deseas depositar?";
@@ -55,7 +61,7 @@ public class DashboardController {
                     comision = 100.0;
                     JOptionPane.showMessageDialog(view, "No tienes saldo suficiente. Se aplicará una comisión de $100.00.", "Aviso de Comisión", JOptionPane.WARNING_MESSAGE);
                 }
-            } else { // CRÉDITO
+            } else {
                 double creditoDisponible = tarjeta.getSaldo() + tarjeta.getLimiteCredito();
                 if (creditoDisponible < monto) {
                     comision = 200.0;
@@ -73,4 +79,19 @@ public class DashboardController {
             JOptionPane.showMessageDialog(view, "La transacción no se pudo completar.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
+    private void configurarTransaccion() {
+        TransaccionDTO seleccionada = view.getTransaccionSeleccionada();
+        if (seleccionada == null) {
+            JOptionPane.showMessageDialog(view, "Por favor, selecciona una transacción de la tabla para configurar.", "Sin Selección", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        TransactionSettingsView settingsView = new TransactionSettingsView(view);
+        Runnable callback = this::cargarDatosDeTarjeta;
+
+        new TransactionSettingsController(settingsView, dao, seleccionada, numTarjeta, callback);
+        settingsView.setVisible(true);
+    }
+
 }

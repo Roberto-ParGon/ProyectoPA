@@ -1,5 +1,6 @@
 package controller;
 
+import model.ClienteDTO;
 import model.CuentaDAO;
 import model.TarjetaDTO;
 import model.UsuarioDTO;
@@ -8,8 +9,7 @@ import view.AddCardView;
 import view.DashboardAccountView;
 import view.DashboardView;
 import view.LoginView;
-
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.util.List;
 
 public class DashboardAccountController {
@@ -37,19 +37,26 @@ public class DashboardAccountController {
         view.setTableData(tarjetas);
     }
 
+
     private void logout() {
         view.dispose();
         new LoginView().setVisible(true);
     }
 
+
     private void openSettings() {
         AccountSettingsView settingsView = new AccountSettingsView(view);
+
+        Runnable callbackDeRefresco = this::refrescarDatosDashboard;
+
+        new AccountSettingsController(settingsView, cuentaDAO, usuario.getIdCliente(), callbackDeRefresco);
         settingsView.setVisible(true);
     }
 
 
     private void openAddCardDialog() {
         AddCardView addCardView = new AddCardView(view);
+
         new AddCardController(addCardView, cuentaDAO, usuario.getIdCliente());
         addCardView.setVisible(true);
 
@@ -73,6 +80,18 @@ public class DashboardAccountController {
 
         } else {
             JOptionPane.showMessageDialog(view, "Por favor, selecciona una tarjeta de la lista.", "Sin selección", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+
+    private void refrescarDatosDashboard() {
+        ClienteDTO clienteActualizado = cuentaDAO.getCliente(usuario.getIdCliente());
+
+        if (clienteActualizado != null) {
+            String nuevoNombreCompleto = clienteActualizado.getNombre() + " " + clienteActualizado.getApellidoPaterno();
+            usuario.setNombreCompleto(nuevoNombreCompleto);
+
+            view.setNombreCliente(nuevoNombreCompleto);
         }
     }
 }

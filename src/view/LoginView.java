@@ -28,7 +28,6 @@ public class LoginView extends JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
-
         URL eyeOnURL = getClass().getResource("/resources/icon/eye_on.png");
         if (eyeOnURL != null) {
             eyeOnIcon = new ImageIcon(new ImageIcon(eyeOnURL).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));

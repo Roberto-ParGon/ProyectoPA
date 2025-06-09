@@ -2,8 +2,8 @@ package model;
 
 public class UsuarioDTO {
     private final int idCliente;
-    private final String nombreCompleto;
-    private final double saldo;
+    private String nombreCompleto;
+    private double saldo;
 
     public UsuarioDTO(int idCliente, String nombreCompleto, double saldo) {
         this.idCliente = idCliente;
@@ -14,4 +14,9 @@ public class UsuarioDTO {
     public int getIdCliente() { return idCliente; }
     public String getNombreCompleto() { return nombreCompleto; }
     public double getSaldo() { return saldo; }
+
+
+    public void setNombreCompleto(String nombreCompleto) {
+        this.nombreCompleto = nombreCompleto;
+    }
 }

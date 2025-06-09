@@ -34,8 +34,6 @@ public class DashboardAccountView extends JFrame {
 
     private List<TarjetaDTO> listaDeTarjetas;
 
-    public DashboardAccountView() {};
-
     public DashboardAccountView(String nombreCliente) {
         this.listaDeTarjetas = new ArrayList<>();
         setTitle("Mis Cuentas");

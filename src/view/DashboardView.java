@@ -1,12 +1,13 @@
 package view;
 
+import model.TransaccionDTO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
-import model.TransaccionDTO;
 
 public class DashboardView extends JFrame {
     private JFrame owner;
@@ -14,10 +15,14 @@ public class DashboardView extends JFrame {
     private DefaultTableModel modeloDepositos;
     private JLabel lblBienvenido;
     private JLabel lblSaldo;
-
+    private List<TransaccionDTO> listaRetiros;
+    private List<TransaccionDTO> listaDepositos;
     private JButton btnRetirar;
     private JButton btnDepositar;
     private JButton btnManage;
+
+    private JTable tablaRetiros;
+    private JTable tablaDepositos;
 
     public DashboardView(String clienteNombre, double saldoActual, JFrame owner) {
         this.owner = owner;
@@ -65,7 +70,6 @@ public class DashboardView extends JFrame {
         contentPanel.add(textPanel, gbc);
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 35, 0));
         buttonPanel.setOpaque(false);
-
         btnRetirar = new JButton("RETIRAR");
         btnRetirar.setFont(new Font("SansSerif", Font.BOLD, 18));
         btnRetirar.setBackground(new Color(244, 67, 54));
@@ -74,8 +78,6 @@ public class DashboardView extends JFrame {
         btnRetirar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnRetirar.setPreferredSize(new Dimension(150, 50));
         btnRetirar.setBorderPainted(false);
-
-
         btnDepositar = new JButton("DEPOSITAR");
         btnDepositar.setFont(new Font("SansSerif", Font.BOLD, 18));
         btnDepositar.setBackground(new Color(102, 187, 106));
@@ -84,23 +86,15 @@ public class DashboardView extends JFrame {
         btnDepositar.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnDepositar.setPreferredSize(new Dimension(150, 50));
         btnDepositar.setBorderPainted(false);
-
         btnManage = new JButton(new ImageIcon(getClass().getResource("/resources/icon/card_config.png")));
         btnManage.setContentAreaFilled(false);
         btnManage.setBorderPainted(false);
         btnManage.setFocusPainted(false);
         btnManage.setCursor(new Cursor(Cursor.HAND_CURSOR));
         btnManage.setPreferredSize(new Dimension(50, 50));
-
-        btnManage.addActionListener( e ->{
-            AccountSettingsView settings = new AccountSettingsView(this);
-            settings.setVisible(true);
-        });
-
         buttonPanel.add(btnRetirar);
         buttonPanel.add(btnDepositar);
         buttonPanel.add(btnManage);
-
         gbc.gridx = 1;
         gbc.gridy = 0;
         gbc.insets = new Insets(3, 30, 0, 0);
@@ -113,13 +107,16 @@ public class DashboardView extends JFrame {
         JPanel centerPanel = new JPanel(new GridLayout(1, 2, 20, 0));
         centerPanel.setBorder(new EmptyBorder(20, 30, 30, 30));
         centerPanel.setBackground(new Color(44, 44, 58));
+
         modeloRetiros = new DefaultTableModel(new Object[]{"Fecha de retiro", "Monto de retiro"}, 0) {
             public boolean isCellEditable(int row, int column) { return false; }
         };
-        JTable tablaRetiros = new JTable(modeloRetiros);
+
+        tablaRetiros = new JTable(modeloRetiros);
         tablaRetiros.setRowHeight(30);
         tablaRetiros.setFont(new Font("SansSerif", Font.PLAIN, 14));
         tablaRetiros.getTableHeader().setReorderingAllowed(false);
+
         JScrollPane scrollRetiros = new JScrollPane(tablaRetiros);
         JPanel panelRetiros = new JPanel(new BorderLayout());
         panelRetiros.setOpaque(false);
@@ -129,13 +126,16 @@ public class DashboardView extends JFrame {
         lblRetiros.setBorder(new EmptyBorder(0, 0, 10, 0));
         panelRetiros.add(lblRetiros, BorderLayout.NORTH);
         panelRetiros.add(scrollRetiros, BorderLayout.CENTER);
+
         modeloDepositos = new DefaultTableModel(new Object[]{"Fecha de depósito", "Monto de depósito"}, 0) {
             public boolean isCellEditable(int row, int column) { return false; }
         };
-        JTable tablaDepositos = new JTable(modeloDepositos);
+
+        tablaDepositos = new JTable(modeloDepositos);
         tablaDepositos.setRowHeight(30);
         tablaDepositos.setFont(new Font("SansSerif", Font.PLAIN, 14));
         tablaDepositos.getTableHeader().setReorderingAllowed(false);
+
         JScrollPane scrollDepositos = new JScrollPane(tablaDepositos);
         JPanel panelDepositos = new JPanel(new BorderLayout());
         panelDepositos.setOpaque(false);
@@ -145,6 +145,7 @@ public class DashboardView extends JFrame {
         lblDepositos.setBorder(new EmptyBorder(0, 0, 10, 0));
         panelDepositos.add(lblDepositos, BorderLayout.NORTH);
         panelDepositos.add(scrollDepositos, BorderLayout.CENTER);
+
         centerPanel.add(panelRetiros);
         centerPanel.add(panelDepositos);
         add(centerPanel, BorderLayout.CENTER);
@@ -171,15 +172,7 @@ public class DashboardView extends JFrame {
         gbc.gridy = 1;
         panel.add(spinner, gbc);
         Object[] options = {"Cancelar", "Aceptar"};
-
-        int result = JOptionPane.showOptionDialog(this, panel,
-                "Transacción",
-                JOptionPane.OK_CANCEL_OPTION,
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                options,
-                options[0]);
-
+        int result = JOptionPane.showOptionDialog(this, panel, "Transacción", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
         if (result == 1) {
             return (double) spinner.getValue();
         }
@@ -193,6 +186,8 @@ public class DashboardView extends JFrame {
     }
 
     public void setTransaccionesData(List<TransaccionDTO> transacciones) {
+        this.listaRetiros = new ArrayList<>();
+        this.listaDepositos = new ArrayList<>();
         modeloRetiros.setRowCount(0);
         modeloDepositos.setRowCount(0);
 
@@ -203,10 +198,30 @@ public class DashboardView extends JFrame {
             };
             if ("RETIRO".equalsIgnoreCase(transaccion.getTipoTransaccion())) {
                 modeloRetiros.addRow(rowData);
+                this.listaRetiros.add(transaccion);
             } else {
                 modeloDepositos.addRow(rowData);
+                this.listaDepositos.add(transaccion);
             }
         }
+    }
+
+    public TransaccionDTO getTransaccionSeleccionada() {
+        int filaRetiro = tablaRetiros.getSelectedRow();
+        if (filaRetiro != -1) {
+            tablaDepositos.clearSelection();
+            return listaRetiros.get(filaRetiro);
+        }
+        int filaDeposito = tablaDepositos.getSelectedRow();
+        if (filaDeposito != -1) {
+            tablaRetiros.clearSelection();
+            return listaDepositos.get(filaDeposito);
+        }
+        return null;
+    }
+
+    public void addConfigurarListener(ActionListener listener) {
+        btnManage.addActionListener(listener);
     }
 
     public void addDepositarListener(ActionListener listener) {

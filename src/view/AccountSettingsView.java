@@ -17,7 +17,7 @@ public class AccountSettingsView extends JDialog {
     private static final Color COLOR_BOTON_CANCELAR = new Color(97, 97, 97);
     private static final Color COLOR_BOTON_ACEPTAR = new Color(126, 87, 194);
 
-    private JPasswordField pinField;
+    private JPasswordField passworddField;
     private JLabel eyeIconLabel;
     private boolean isPinVisible = false;
     private ImageIcon userIconImg;
@@ -165,7 +165,7 @@ public class AccountSettingsView extends JDialog {
         gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(tfLastName2, gbc);
 
-        JLabel lblPin = new JLabel("Cambiar PIN (4 dígitos):");
+        JLabel lblPin = new JLabel("Cambiar Contraseña:");
         lblPin.setFont(new Font("SansSerif", Font.PLAIN, 14));
         lblPin.setForeground(COLOR_TEXTO);
         gbc.gridy = 8;
@@ -178,13 +178,13 @@ public class AccountSettingsView extends JDialog {
                 BorderFactory.createLineBorder(COLOR_BORDE_CAMPO, 1),
                 new EmptyBorder(5, 10, 5, 5)));
 
-        pinField = new JPasswordField();
-        pinField.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        pinField.setBackground(COLOR_CAMPO_FONDO);
-        pinField.setForeground(COLOR_TEXTO);
-        pinField.setCaretColor(COLOR_TEXTO);
-        pinField.setBorder(null);
-        pinField.setEchoChar('●');
+        passworddField = new JPasswordField();
+        passworddField.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        passworddField.setBackground(COLOR_CAMPO_FONDO);
+        passworddField.setForeground(COLOR_TEXTO);
+        passworddField.setCaretColor(COLOR_TEXTO);
+        passworddField.setBorder(null);
+        passworddField.setEchoChar('●');
 
         eyeIconLabel = new JLabel();
         eyeIconLabel.setIcon(eyeOpenIconImg); // Ícono inicial
@@ -195,17 +195,17 @@ public class AccountSettingsView extends JDialog {
             public void mouseClicked(MouseEvent e) {
                 isPinVisible = !isPinVisible;
                 if (isPinVisible) {
-                    pinField.setEchoChar((char) 0);
+                    passworddField.setEchoChar((char) 0);
                     eyeIconLabel.setIcon(eyeSlashedIconImg);
                 } else {
-                    pinField.setEchoChar('*');
+                    passworddField.setEchoChar('*');
                     eyeIconLabel.setIcon(eyeOpenIconImg);
                 }
             }
 
         });
 
-        pinPanel.add(pinField, BorderLayout.CENTER);
+        pinPanel.add(passworddField, BorderLayout.CENTER);
         JPanel eyePanel = new JPanel(new GridBagLayout());
         eyePanel.setBackground(COLOR_CAMPO_FONDO);
         eyePanel.add(eyeIconLabel);

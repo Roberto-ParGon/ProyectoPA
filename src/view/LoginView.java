@@ -1,8 +1,13 @@
 package view;
 
+import controller.LoginController;
+import controller.RegisterController;
+import model.CuentaDAO;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
@@ -14,7 +19,8 @@ public class LoginView extends JFrame {
     private ImageIcon eyeOnIcon;
     private ImageIcon eyeOffIcon;
     private boolean isPinVisible = false;
-
+    private JTextField tfCard;
+    private JButton btnLogin;
 
     public LoginView() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,13 +61,15 @@ public class LoginView extends JFrame {
         leftPanel.add(title, gbc);
 
         //Número de tarjeta
-        JLabel lblCard = new JLabel("Núm. de tarjeta:");
+        JLabel lblCard = new JLabel("Correo Electrónico:");
+        JLabel lblPin = new JLabel("Contraseña:");
+
         lblCard.setFont(new Font("SansSerif", Font.PLAIN, 16));
         lblCard.setForeground(Color.WHITE);
         gbc.gridy = 1; gbc.insets.bottom = 8; gbc.anchor = GridBagConstraints.WEST;
         leftPanel.add(lblCard, gbc);
 
-        JTextField tfCard = new JTextField();
+        tfCard = new JTextField();
         tfCard.setPreferredSize(new Dimension(300, 45));
         tfCard.setFont(new Font("SansSerif", Font.PLAIN, 16));
         tfCard.setBackground(new Color(45, 45, 65));
@@ -74,7 +82,7 @@ public class LoginView extends JFrame {
         leftPanel.add(tfCard, gbc);
 
         //PIN de tarjeta
-        JLabel lblPin = new JLabel("PIN de tarjeta:");
+        lblPin = new JLabel("Contraseña:");
         lblPin.setFont(new Font("SansSerif", Font.PLAIN, 16));
         lblPin.setForeground(Color.WHITE);
         gbc.gridy = 3; gbc.insets.bottom = 8; gbc.anchor = GridBagConstraints.WEST;
@@ -117,7 +125,7 @@ public class LoginView extends JFrame {
         leftPanel.add(pinPanel, gbc);
 
         //Botón de ingresar
-        JButton btnLogin = new JButton("Ingresar");
+        btnLogin = new JButton("Ingresar");
         btnLogin.setFont(new Font("SansSerif", Font.BOLD, 20));
         btnLogin.setBackground(new Color(102, 102, 204));
         btnLogin.setForeground(Color.WHITE);
@@ -141,37 +149,32 @@ public class LoginView extends JFrame {
         Image scaledImage = originalIcon.getImage().getScaledInstance(700, 750, Image.SCALE_SMOOTH);
         rightPanel.add(new JLabel(new ImageIcon(scaledImage)), BorderLayout.CENTER);
 
-        //Asignar paneles
         add(leftPanel, BorderLayout.WEST);
         add(rightPanel, BorderLayout.CENTER);
 
-        //Lanzar ventana de registro
         lblRegister.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 RegisterView registerView = new RegisterView(LoginView.this);
+                CuentaDAO dao = new CuentaDAO();
+                new RegisterController(registerView, dao);
                 registerView.setVisible(true);
             }
         });
 
-        //Validar y lanzar ventana de Dashboard
-        btnLogin.addActionListener(e -> {
-            String numTarjeta = tfCard.getText();
-            String pin = new String(tfPin.getPassword());
+        new LoginController(this);
 
-            if (numTarjeta.equals("") && pin.equals("")) {
-                String nombreCliente = "Juan Carlos Rocoque";
-                double saldo = 25000.00;
-
-                DashboardView dashboard = new DashboardView(nombreCliente, saldo);
-                dashboard.setVisible(true);
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this,
-                        "Número de tarjeta o PIN incorrecto.",
-                        "Error de autenticación",
-                        JOptionPane.ERROR_MESSAGE);
-            }
-        });
     }
+
+    public String getCorreo() {
+        return tfCard.getText();
+    }
+
+    public String getContrasena() {
+        return new String(tfPin.getPassword());
+    }
+    public void addLoginListener(ActionListener listener) {
+        btnLogin.addActionListener(listener);
+    }
+
 }

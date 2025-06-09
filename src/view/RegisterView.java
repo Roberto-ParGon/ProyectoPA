@@ -3,14 +3,20 @@ package view;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter; // Import añadido
-import java.awt.event.MouseEvent;  // Import añadido
-import java.net.URL;               // Import añadido
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.net.URL;
 
 public class RegisterView extends JDialog {
-
+    private JTextField tfName;
+    private JTextField tfLastName1;
+    private JTextField tfLastName2;
+    private JTextField tfEmail;
     private JPasswordField tfPin;
     private JPasswordField tfConfirmPin;
+    private JButton btnAccept;
+
     private ImageIcon eyeOnIcon;
     private ImageIcon eyeOffIcon;
     private boolean isPin1Visible = false;
@@ -18,37 +24,32 @@ public class RegisterView extends JDialog {
 
     public RegisterView(JFrame owner) {
         super(owner, "Sistema de Registro", true);
-        setSize(520, 780);
+        setSize(520, 850);
         setResizable(false);
         setLayout(new BorderLayout());
         setLocationRelativeTo(owner);
+        loadIcons();
+        initializeComponents();
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    }
 
+    private void loadIcons() {
         URL eyeOnURL = getClass().getResource("/resources/icon/eye_on.png");
         if (eyeOnURL != null) {
             eyeOnIcon = new ImageIcon(new ImageIcon(eyeOnURL).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-        } else {
-            System.err.println("RegisterView: No se pudo encontrar el recurso eye_on.png");
         }
-
         URL eyeOffURL = getClass().getResource("/resources/icon/eye_off.png");
         if (eyeOffURL != null) {
             eyeOffIcon = new ImageIcon(new ImageIcon(eyeOffURL).getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH));
-        } else {
-            System.err.println("RegisterView: No se pudo encontrar el recurso eye_off.png");
         }
-
-        initializeComponents();
-        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     }
 
     private void initializeComponents() {
         JPanel mainPanel = new JPanel(new GridBagLayout());
         mainPanel.setBorder(new EmptyBorder(30, 50, 30, 50));
-
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(0, 0, 0, 0);
 
         // Título
         JLabel title = new JLabel("REGISTRO");
@@ -56,247 +57,170 @@ public class RegisterView extends JDialog {
         title.setForeground(Color.WHITE);
         title.setHorizontalAlignment(JLabel.CENTER);
         gbc.gridy = 0;
-        gbc.insets.bottom = 40;
+        gbc.insets = new Insets(0, 0, 30, 0);
         mainPanel.add(title, gbc);
 
-        // Campo de Nombre
-        JLabel lblName = new JLabel("Nombre:");
-        lblName.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        lblName.setForeground(Color.WHITE);
+        //Nombre
         gbc.gridy = 1;
         gbc.insets = new Insets(0, 0, 8, 0);
         gbc.anchor = GridBagConstraints.WEST;
-        mainPanel.add(lblName, gbc);
-
-        JTextField tfName = new JTextField();
-        tfName.setPreferredSize(new Dimension(350, 45));
-        tfName.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        tfName.setBackground(new Color(45, 45, 65));
-        tfName.setForeground(Color.WHITE);
-        tfName.setCaretColor(Color.WHITE);
-        tfName.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(70, 70, 90), 1),
-                new EmptyBorder(8, 15, 8, 15)));
+        mainPanel.add(createLabel("Nombre:"), gbc);
+        tfName = createTextField();
         gbc.gridy = 2;
-        gbc.insets.bottom = 20;
+        gbc.insets = new Insets(0, 0, 20, 0);
         gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(tfName, gbc);
 
-        // Campo de Apellido Paterno
-        JLabel lblLastName1 = new JLabel("Apellido Paterno:");
-        lblLastName1.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        lblLastName1.setForeground(Color.WHITE);
+        //Apellido Paterno
         gbc.gridy = 3;
-        gbc.insets.bottom = 8;
+        gbc.insets = new Insets(0, 0, 8, 0);
         gbc.anchor = GridBagConstraints.WEST;
-        mainPanel.add(lblLastName1, gbc);
-
-        JTextField tfLastName1 = new JTextField();
-        tfLastName1.setPreferredSize(new Dimension(350, 45));
-        tfLastName1.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        tfLastName1.setBackground(new Color(45, 45, 65));
-        tfLastName1.setForeground(Color.WHITE);
-        tfLastName1.setCaretColor(Color.WHITE);
-        tfLastName1.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(70, 70, 90), 1),
-                new EmptyBorder(8, 15, 8, 15)));
+        mainPanel.add(createLabel("Apellido Paterno:"), gbc);
+        tfLastName1 = createTextField();
         gbc.gridy = 4;
-        gbc.insets.bottom = 20;
+        gbc.insets = new Insets(0, 0, 20, 0);
         gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(tfLastName1, gbc);
 
-        // Campo de Apellido Materno
-        JLabel lblLastName2 = new JLabel("Apellido Materno:");
-        lblLastName2.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        lblLastName2.setForeground(Color.WHITE);
+        //Apellido Materno
         gbc.gridy = 5;
-        gbc.insets.bottom = 8;
+        gbc.insets = new Insets(0, 0, 8, 0);
         gbc.anchor = GridBagConstraints.WEST;
-        mainPanel.add(lblLastName2, gbc);
-
-        JTextField tfLastName2 = new JTextField();
-        tfLastName2.setPreferredSize(new Dimension(350, 45));
-        tfLastName2.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        tfLastName2.setBackground(new Color(45, 45, 65));
-        tfLastName2.setForeground(Color.WHITE);
-        tfLastName2.setCaretColor(Color.WHITE);
-        tfLastName2.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(70, 70, 90), 1),
-                new EmptyBorder(8, 15, 8, 15)));
+        mainPanel.add(createLabel("Apellido Materno:"), gbc);
+        tfLastName2 = createTextField();
         gbc.gridy = 6;
-        gbc.insets.bottom = 20;
+        gbc.insets = new Insets(0, 0, 20, 0);
         gbc.anchor = GridBagConstraints.CENTER;
         mainPanel.add(tfLastName2, gbc);
 
-        //Input de PIN
-        JLabel lblPin = new JLabel("PIN (4 dígitos):");
-        lblPin.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        lblPin.setForeground(Color.WHITE);
+        //Correo Electrónico
         gbc.gridy = 7;
-        gbc.insets.bottom = 8;
+        gbc.insets = new Insets(0, 0, 8, 0);
         gbc.anchor = GridBagConstraints.WEST;
-        mainPanel.add(lblPin, gbc);
-
-        JPanel pinPanel1 = new JPanel(new BorderLayout());
-        pinPanel1.setPreferredSize(new Dimension(350, 45));
-        pinPanel1.setBackground(new Color(45, 45, 65));
-        pinPanel1.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(70, 70, 90), 1),
-                new EmptyBorder(8, 15, 8, 5)));
-
-        tfPin = new JPasswordField();
-        tfPin.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        tfPin.setBackground(new Color(45, 45, 65));
-        tfPin.setForeground(Color.WHITE);
-        tfPin.setCaretColor(Color.WHITE);
-        tfPin.setBorder(null);
-        tfPin.setEchoChar('*');
-
-        JLabel eyeIconLabel1 = new JLabel(eyeOffIcon);
-        eyeIconLabel1.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        eyeIconLabel1.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                isPin1Visible = !isPin1Visible;
-                if (isPin1Visible) {
-                    tfPin.setEchoChar((char) 0);
-                    eyeIconLabel1.setIcon(eyeOnIcon);
-                } else {
-                    tfPin.setEchoChar('*');
-                    eyeIconLabel1.setIcon(eyeOffIcon);
-                }
-            }
-        });
-
-        pinPanel1.add(tfPin, BorderLayout.CENTER);
-        pinPanel1.add(eyeIconLabel1, BorderLayout.EAST);
-
+        mainPanel.add(createLabel("Correo Electrónico:"), gbc);
+        tfEmail = createTextField();
         gbc.gridy = 8;
-        gbc.insets.bottom = 20;
+        gbc.insets = new Insets(0, 0, 20, 0);
         gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(pinPanel1, gbc);
+        mainPanel.add(tfEmail, gbc);
 
-        //Input de confirmar PIN
-        JLabel lblConfirmPin = new JLabel("Confirmar PIN:");
-        lblConfirmPin.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        lblConfirmPin.setForeground(Color.WHITE);
+        //Contraseña
         gbc.gridy = 9;
-        gbc.insets.bottom = 8;
+        gbc.insets = new Insets(0, 0, 8, 0);
         gbc.anchor = GridBagConstraints.WEST;
-        mainPanel.add(lblConfirmPin, gbc);
-
-        JPanel pinPanel2 = new JPanel(new BorderLayout());
-        pinPanel2.setPreferredSize(new Dimension(350, 45));
-        pinPanel2.setBackground(new Color(45, 45, 65));
-        pinPanel2.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(70, 70, 90), 1),
-                new EmptyBorder(8, 15, 8, 5)));
-
-        tfConfirmPin = new JPasswordField();
-        tfConfirmPin.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        tfConfirmPin.setBackground(new Color(45, 45, 65));
-        tfConfirmPin.setForeground(Color.WHITE);
-        tfConfirmPin.setCaretColor(Color.WHITE);
-        tfConfirmPin.setBorder(null);
-        tfConfirmPin.setEchoChar('*');
-
-        JLabel eyeIconLabel2 = new JLabel(eyeOffIcon);
-        eyeIconLabel2.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        eyeIconLabel2.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                isPin2Visible = !isPin2Visible;
-                if (isPin2Visible) {
-                    tfConfirmPin.setEchoChar((char) 0);
-                    eyeIconLabel2.setIcon(eyeOnIcon);
-                } else {
-                    tfConfirmPin.setEchoChar('*');
-                    eyeIconLabel2.setIcon(eyeOffIcon);
-                }
-            }
-        });
-
-        pinPanel2.add(tfConfirmPin, BorderLayout.CENTER);
-        pinPanel2.add(eyeIconLabel2, BorderLayout.EAST);
-
+        mainPanel.add(createLabel("Contraseña:"), gbc);
+        tfPin = new JPasswordField();
         gbc.gridy = 10;
-        gbc.insets.bottom = 22;
+        gbc.insets = new Insets(0, 0, 20, 0);
         gbc.anchor = GridBagConstraints.CENTER;
-        mainPanel.add(pinPanel2, gbc);
+        mainPanel.add(createPinPanel(tfPin, 1), gbc);
 
-        //RadioButtons
-        JLabel lblCardType = new JLabel("Tipo de tarjeta:");
-        lblCardType.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        lblCardType.setForeground(Color.WHITE);
+        //Confirmar Contraseña
         gbc.gridy = 11;
-        gbc.insets = new Insets(0,0,16,0);
+        gbc.insets = new Insets(0, 0, 8, 0);
         gbc.anchor = GridBagConstraints.WEST;
-        mainPanel.add(lblCardType, gbc);
-
-        JPanel cardTypePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 48, 0));
-        ButtonGroup cardTypeGroup = new ButtonGroup();
-
-        JRadioButton rbDebit = new JRadioButton("Débito", true);
-        rbDebit.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        rbDebit.setForeground(Color.WHITE);
-        rbDebit.setFocusPainted(false);
-        rbDebit.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        cardTypeGroup.add(rbDebit);
-        cardTypePanel.add(rbDebit);
-
-        JRadioButton rbCredit = new JRadioButton("Crédito");
-        rbCredit.setFont(new Font("SansSerif", Font.PLAIN, 16));
-        rbCredit.setForeground(Color.WHITE);
-        rbCredit.setFocusPainted(false);
-        rbCredit.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        cardTypeGroup.add(rbCredit);
-        cardTypePanel.add(rbCredit);
-
+        mainPanel.add(createLabel("Confirmar Contraseña:"), gbc);
+        tfConfirmPin = new JPasswordField();
         gbc.gridy = 12;
-        gbc.insets.bottom = 40;
-        gbc.anchor = GridBagConstraints.WEST;
-        mainPanel.add(cardTypePanel, gbc);
+        gbc.insets = new Insets(0, 0, 20, 0);
+        gbc.anchor = GridBagConstraints.CENTER;
+        mainPanel.add(createPinPanel(tfConfirmPin, 2), gbc);
 
+        //Panel de Botones
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         buttonPanel.add(Box.createHorizontalGlue());
-
-        //Botón cancelar
         JButton btnCancel = new JButton("CANCELAR");
-        btnCancel.setFont(new Font("SansSerif", Font.BOLD, 16));
-        btnCancel.setBackground(new Color(120, 120, 120));
-        btnCancel.setForeground(Color.WHITE);
-        btnCancel.setPreferredSize(new Dimension(130, 55));
-        btnCancel.setBorderPainted(false);
-        btnCancel.setFocusPainted(false);
-        btnCancel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        styleButton(btnCancel, new Color(120, 120, 120));
         btnCancel.addActionListener(e -> dispose());
-
-        //Botón aceptar
-        JButton btnAccept = new JButton("ACEPTAR");
-        btnAccept.setFont(new Font("SansSerif", Font.BOLD, 16));
-        btnAccept.setBackground(new Color(102, 102, 204));
-        btnAccept.setForeground(Color.WHITE);
-        btnAccept.setPreferredSize(new Dimension(130, 55));
-        btnAccept.setBorderPainted(false);
-        btnAccept.setFocusPainted(false);
-        btnAccept.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        btnAccept.addActionListener(e -> {
-            //Registrar cuenta
-            dispose();
-        });
+        btnAccept = new JButton("ACEPTAR");
+        styleButton(btnAccept, new Color(102, 102, 204));
 
         buttonPanel.add(btnCancel);
         buttonPanel.add(Box.createRigidArea(new Dimension(20, 0)));
         buttonPanel.add(btnAccept);
         buttonPanel.add(Box.createHorizontalGlue());
-
         gbc.gridy = 13;
-        gbc.insets.bottom = 0;
-        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.insets.top = 20;
         mainPanel.add(buttonPanel, gbc);
 
         add(mainPanel, BorderLayout.CENTER);
+    }
 
+    private JLabel createLabel(String text) {
+        JLabel label = new JLabel(text);
+        label.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        label.setForeground(Color.WHITE);
+        return label;
+    }
+
+    private JTextField createTextField() {
+        JTextField textField = new JTextField();
+        textField.setPreferredSize(new Dimension(350, 45));
+        textField.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        textField.setBackground(new Color(45, 45, 65));
+        textField.setForeground(Color.WHITE);
+        textField.setCaretColor(Color.WHITE);
+        textField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(70, 70, 90), 1),
+                new EmptyBorder(8, 15, 8, 15)));
+        return textField;
+    }
+
+    private JPanel createPinPanel(JPasswordField passwordField, int eyeId) {
+        JPanel pinPanel = new JPanel(new BorderLayout());
+        pinPanel.setPreferredSize(new Dimension(350, 45));
+        pinPanel.setBackground(new Color(45, 45, 65));
+        pinPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(70, 70, 90), 1),
+                new EmptyBorder(8, 15, 8, 5)));
+
+        passwordField.setFont(new Font("SansSerif", Font.PLAIN, 16));
+        passwordField.setBackground(new Color(45, 45, 65));
+        passwordField.setForeground(Color.WHITE);
+        passwordField.setCaretColor(Color.WHITE);
+        passwordField.setBorder(null);
+        passwordField.setEchoChar('*');
+
+        JLabel eyeIconLabel = new JLabel(eyeOffIcon);
+        eyeIconLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        eyeIconLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (eyeId == 1) {
+                    isPin1Visible = !isPin1Visible;
+                    passwordField.setEchoChar(isPin1Visible ? (char) 0 : '*');
+                    eyeIconLabel.setIcon(isPin1Visible ? eyeOnIcon : eyeOffIcon);
+                } else {
+                    isPin2Visible = !isPin2Visible;
+                    passwordField.setEchoChar(isPin2Visible ? (char) 0 : '*');
+                    eyeIconLabel.setIcon(isPin2Visible ? eyeOnIcon : eyeOffIcon);
+                }
+            }
+        });
+        pinPanel.add(passwordField, BorderLayout.CENTER);
+        pinPanel.add(eyeIconLabel, BorderLayout.EAST);
+        return pinPanel;
+    }
+
+    private void styleButton(JButton button, Color color) {
+        button.setFont(new Font("SansSerif", Font.BOLD, 16));
+        button.setBackground(color);
+        button.setForeground(Color.WHITE);
+        button.setPreferredSize(new Dimension(130, 55));
+        button.setBorderPainted(false);
+        button.setFocusPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+
+    public String getNombre() { return tfName.getText(); }
+    public String getApellidoPaterno() { return tfLastName1.getText(); }
+    public String getApellidoMaterno() { return tfLastName2.getText(); }
+    public String getCorreo() { return tfEmail.getText(); }
+    public char[] getContrasena() { return tfPin.getPassword(); }
+    public char[] getConfirmarContrasena() { return tfConfirmPin.getPassword(); }
+
+    public void addAceptarListener(ActionListener listener) {
+        btnAccept.addActionListener(listener);
     }
 }
